@@ -48,10 +48,9 @@ export default class Network {
     };
 
     async connect () {
-        if (this.isDev) {
-            // Development mode: Connect to localhost
-            this.serverAddress = 'localhost:8080';
-            this.worker.postMessage({ type: 'connect', data: `ws://${this.serverAddress}` });
+        if (1 == 1) {
+            this.serverAddress = 'testserv.serveo.net';
+            this.worker.postMessage({ type: 'connect', data: `wss://${this.serverAddress}` });
 
         } else {
             // Production mode: Fetch server address and connect
