@@ -70,9 +70,9 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	connectionMutex.Lock()
 	defer connectionMutex.Unlock()
 
-	// Check if the IP is already connected
-	if _, exists := ipIndex[userData.ClientIP]; exists {
-		log.Printf("Connection rejected: IP %s is already connected", userData.ClientIP)
+	// Check if the IP already has 2 active connections
+	if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) >= 2 {
+		log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
 		return false
 	}
 
@@ -82,7 +82,7 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 		Conn:     conn,
 	}
 
-	// Index the connection by IP (store multiple connections per IP)
+	// Index the connection by IP
 	ipIndex[userData.ClientIP] = append(ipIndex[userData.ClientIP], activeConnections[conn])
 
 	return true
