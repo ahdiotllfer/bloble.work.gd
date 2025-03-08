@@ -1,6 +1,5 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
-const BlobfuscationPlugin = require('./blobfuscator/blobfuscator-plugin');
 
 module.exports = {
   mode: 'production',
@@ -15,21 +14,21 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           compress: {
-            drop_console: true, // Remove console statements
-            drop_debugger: true, // Remove debugger statements
+            drop_console: false, // Remove console statements
+            drop_debugger: false, // Remove debugger statements
             passes: 3, // Number of times to pass the file for optimization
           },
           mangle: {
             toplevel: false, // Mangle top-level variables and functions
             module: false, // Mangle variables in modules
-            keep_classnames: false, // Mangle class names
-            keep_fnames: false, // Mangle function names
+            keep_classnames: true, // Mangle class names
+            keep_fnames: true, // Mangle function names
           },
           format: {
-            beautify: false, // Disable beautification
+            beautify: true, // Disable beautification
           }
         },
-        extractComments: true 
+        extractComments: false 
       }),
     ]
   },
@@ -58,11 +57,5 @@ module.exports = {
         ],
       },
     ]
-  },
-  plugins: [
-   new BlobfuscationPlugin({
-      outputDir: path.join(__dirname, 'dist', 'blobfuscated'),
-      includedWordsFilePath: path.join(__dirname, 'blobfuscator/includedWords.txt'),
-   })
-  ],
+  }
 };
