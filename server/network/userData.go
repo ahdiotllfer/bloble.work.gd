@@ -66,10 +66,15 @@ func RemovePlayingDiscordAccount(discordId string) {
 	delete(playingDiscordIds, discordId)
 }
 
-// StoreUserData stores the connection and associates it with UserData, also indexing by IP.
 func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	connectionMutex.Lock()
 	defer connectionMutex.Unlock()
+
+	// Check if the IP is already connected
+	if _, exists := ipIndex[userData.ClientIP]; exists {
+		log.Printf("Connection rejected: IP %s is already connected", userData.ClientIP)
+		return false
+	}
 
 	// Store the connection in activeConnections map
 	activeConnections[conn] = UserConnection{
@@ -82,6 +87,7 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 
 	return true
 }
+
 
 // GetUserDataByConn retrieves the UserData for a given WebSocket connection.
 func GetUserDataByConn(conn *websocket.Conn) (UserData, bool) {
