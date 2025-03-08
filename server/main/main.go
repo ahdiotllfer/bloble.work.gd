@@ -104,6 +104,7 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	var userData network.UserData
 
 	userData.ClientIP = getClientIP(r)
+	log.Printf(getClientIP(r))
 
 	// Try to retrieve the refresh token from cookies
 	refreshTokenCookie, err := r.Cookie("refreshToken")
