@@ -68,7 +68,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			
 		} else {
-			log.Printf("cors middleware")
+			log.Printf("cors middleware err", origin)
 		}
 
 		// Handle OPTIONS requests
