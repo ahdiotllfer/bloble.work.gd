@@ -175,9 +175,9 @@ func main() {
 	game.Start()
 
 	// Define WebSocket endpoint handlers with session checks
-	http.Handle("/", wsEndpoint)
-	http.Handle("/ffa1", wsEndpoint)
-	http.Handle("/ffa2", wsEndpoint)
+	http.HandleFunc("/", wsEndpoint)
+	http.HandleFunc("/ffa1", wsEndpoint)
+	http.HandleFunc("/ffa2", wsEndpoint)
 
 	http.HandleFunc("/playercount", playerCountHandler)
 	http.HandleFunc("/reboot", serverRebootHandler)
