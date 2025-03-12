@@ -110,31 +110,9 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	userData.ClientIP = getClientIP(r)
 	log.Printf(getClientIP(r))
 
-	// Try to retrieve the refresh token from cookies
-	refreshTokenCookie, err := r.Cookie("refreshToken")
-	if err != nil {
-		// If the refresh token cookie is not set, proceed directly to WebSocket handler
-		//log.Println("Refresh token not set, proceeding without it.")
-		network.WsEndpoint(w, r, userData)
-		return
-	}
-
-	// If the refresh token is set, handle it
-	refreshToken := refreshTokenCookie.Value
-	//log.Printf("Received refresh token: %s", refreshToken)
-
-	// Fetch user data with the refresh token
-	body := map[string]string{"refreshToken": refreshToken}
-	jsonBody, err := json.Marshal(body)
-	if err != nil {
-		log.Printf("Failed to marshal JSON body: %v", err)
-		http.Error(w, "Failed to retrieve user data", http.StatusInternalServerError)
-		return
-	}
-
-	req.Header.Set("Content-Type", "application/json")
+	
 	origin := fmt.Sprintf("http://127.0.0.1:%s", PORT)
-	req.Header.Set("Origin", origin)
+
 
 	client := &http.Client{
 		Timeout: 5 * time.Second,
