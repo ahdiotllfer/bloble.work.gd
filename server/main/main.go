@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -109,14 +108,6 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 
 	userData.ClientIP = getClientIP(r)
 	log.Printf(getClientIP(r))
-
-
-
-
-	client := &http.Client{
-		Timeout: 5 * time.Second,
-	}
-	
 
 	// Pass the request to the WebSocket handler
 	network.WsEndpoint(w, r, userData)
