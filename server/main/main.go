@@ -66,6 +66,9 @@ func corsMiddleware(next http.Handler) http.Handler {
 		if origin == "https://blubber.run.place" || origin == "http://localhost" || origin == "http://127.0.0.1" || origin == "http://localhost:5502" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			
+		} else {
+			log.Printf("cors middleware")
 		}
 
 		// Handle OPTIONS requests
@@ -98,6 +101,7 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
        // Allow only requests from "https://blubber.run.place"
        if origine != "https://blubber.run.place" {
        		http.Error(w, "Forbidden", http.StatusForbidden)
+			log.Printf("origin forbidden", origine)
          	return
        }
 
@@ -128,13 +132,6 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a new POST request
-	req, err := http.NewRequest(http.MethodPost, "https://auth.blobl.io/api/user", bytes.NewBuffer(jsonBody))
-	if err != nil {
-		log.Printf("Failed to create request: %v", err)
-		http.Error(w, "Failed to retrieve user data", http.StatusInternalServerError)
-		return
-	}
 	req.Header.Set("Content-Type", "application/json")
 	origin := fmt.Sprintf("http://127.0.0.1:%s", PORT)
 	req.Header.Set("Origin", origin)
@@ -178,9 +175,9 @@ func main() {
 	game.Start()
 
 	// Define WebSocket endpoint handlers with session checks
-	http.Handle("/", corsMiddleware(http.HandlerFunc(wsEndpoint)))
-	http.Handle("/ffa1", corsMiddleware(http.HandlerFunc(wsEndpoint)))
-	http.Handle("/ffa2", corsMiddleware(http.HandlerFunc(wsEndpoint)))
+	http.Handle("/", wsEndpoint)
+	http.Handle("/ffa1", wsEndpoint)
+	http.Handle("/ffa2", wsEndpoint)
 
 	http.HandleFunc("/playercount", playerCountHandler)
 	http.HandleFunc("/reboot", serverRebootHandler)
