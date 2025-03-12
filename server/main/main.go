@@ -10,7 +10,6 @@ import (
 	"server/game"
 	"server/network"
 	"strconv"
-	"time"
 )
 
 var PORT string
