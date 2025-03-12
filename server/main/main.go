@@ -110,33 +110,13 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	userData.ClientIP = getClientIP(r)
 	log.Printf(getClientIP(r))
 
-	
-	origin := fmt.Sprintf("http://127.0.0.1:%s", PORT)
+
 
 
 	client := &http.Client{
 		Timeout: 5 * time.Second,
 	}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Failed to send request to user API: %v", err)
-		http.Error(w, "Failed to retrieve user data", http.StatusInternalServerError)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		log.Printf("Invalid or expired refresh token: %s", resp.Status)
-		http.Error(w, "Invalid or expired refresh token.", http.StatusForbidden)
-		return
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&userData); err != nil {
-		log.Printf("Failed to parse user data: %v", err)
-		http.Error(w, "Failed to parse user data", http.StatusInternalServerError)
-		return
-	}
+	
 
 	// Pass the request to the WebSocket handler
 	network.WsEndpoint(w, r, userData)
