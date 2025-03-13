@@ -69,9 +69,22 @@ func RemovePlayingDiscordAccount(discordId string) {
 func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	connectionMutex.Lock()
 	defer connectionMutex.Unlock()
-	if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) >= 2 {
-		log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
-		return false
+	ipParts := strings.Split(userData.ClientIP, ".")
+	ipPrefix := strings.Join(ipParts[:3], ".")
+	log.Printf("prefix:", ipPrefix)
+	connectionCount := 0
+	for ip, connections := range ipIndex {
+		if strings.HasPrefix(ip, ipPrefix) {
+			connectionCount += len(connections)
+		}
+	}
+	// if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) == 1 {
+	// 	log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
+	// 	return false
+	// }
+	if connectionCount >= 1 {
+		log.Printf("Connection rejected: IP prefix %s.* already has %d connections", ipPrefix, connectionCount)
+		return false, fmt.Errorf("connection limit exceeded for IP prefix %s.*", ipPrefix)
 	}
 
 	// Store the connection in activeConnections map
