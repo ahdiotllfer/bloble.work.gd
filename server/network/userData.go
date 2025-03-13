@@ -83,9 +83,9 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	// 	log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
 	// 	return false
 	// }
-	if connectionCount >= 1 {
+	if connectionCount > 1 {
 		log.Printf("Connection rejected: IP prefix %s.* already has %d connections", ipPrefix, connectionCount)
-		return false, fmt.Errorf("connection limit exceeded for IP prefix %s.*", ipPrefix)
+		return false
 	}
 
 	// Store the connection in activeConnections map
