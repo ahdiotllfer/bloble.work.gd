@@ -69,6 +69,10 @@ func RemovePlayingDiscordAccount(discordId string) {
 func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	connectionMutex.Lock()
 	defer connectionMutex.Unlock()
+	if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) >= 2 {
+		log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
+		return false
+	}
 
 	// Store the connection in activeConnections map
 	activeConnections[conn] = UserConnection{
@@ -77,11 +81,8 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	}
 
 	// Index the connection by IP
-	ipIndex[userData.ClientIP] = append(ipIndex[userData.ClientIP], activeConnections[conn])
-	if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) >= 2 {
-		log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
-		return false
-	}
+	ipIndex[userData.ClientIP] = []UserConnection{activeConnections[conn]}
+
 	return true
 }
 
