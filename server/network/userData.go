@@ -72,18 +72,19 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	defer connectionMutex.Unlock()
 	ipParts := strings.Split(userData.ClientIP, ".")
 	ipPrefix := strings.Join(ipParts[:3], ".")
-	log.Printf("prefix:", ipPrefix)
+	
 	connectionCount := 0
 	for ip, connections := range ipIndex {
 		if strings.HasPrefix(ip, ipPrefix) {
 			connectionCount += len(connections)
 		}
 	}
+	log.Printf("prefix:%", ipPrefix, connectionCount)
 	// if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) == 1 {
 	// 	log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
 	// 	return false
 	// }
-	if connectionCount > 1 {
+	if connectionCount >= 1 {
 		log.Printf("Connection rejected: IP prefix %s.* already has %d connections", ipPrefix, connectionCount)
 		return false
 	}
