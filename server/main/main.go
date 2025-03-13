@@ -97,11 +97,13 @@ func getClientIP(r *http.Request) string {
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
        origine := r.Header.Get("Origin")
        // Allow only requests from "https://blubber.run.place"
+	   log.Printf(origine)
        if origine != "https://blubber.run.place" {
        		http.Error(w, "Forbidden", http.StatusForbidden)
 			log.Printf("origin forbidden", origine)
          	return
        }
+	   
 
 	var userData network.UserData
 
