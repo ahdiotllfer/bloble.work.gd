@@ -81,7 +81,7 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 	}
 
 	// Index the connection by IP
-	ipIndex[userData.ClientIP] = []UserConnection{activeConnections[conn]}
+	ipIndex[userData.ClientIP] = append(ipIndex[userData.ClientIP], activeConnections[conn])
 
 	return true
 }
