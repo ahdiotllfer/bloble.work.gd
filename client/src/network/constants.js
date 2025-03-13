@@ -22,7 +22,7 @@ TODO:
 
 
 export const Servers = {
-    "Frankfurt": "https://fra1.blobl.io",
+    "Frankfurt": "https://blubber.run.place/ffa1",
 };
 
 export const MessageTypes = {

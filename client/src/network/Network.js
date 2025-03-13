@@ -49,7 +49,7 @@ export default class Network {
 
     async connect () {
         if (1 == 1) {
-            this.serverAddress = 'testserv.serveo.net';
+            this.serverAddress = 'blubber.run.place/ffa1';
             this.worker.postMessage({ type: 'connect', data: `wss://${this.serverAddress}` });
 
         } else {
