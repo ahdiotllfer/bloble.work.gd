@@ -100,7 +100,7 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 	   log.Printf(origine)
        if origine != "https://blubber.run.place" {
        		http.Error(w, "Forbidden", http.StatusForbidden)
-			log.Printf("origin forbidden", origine)
+			log.Printf("origin forbidden: %", origine)
          	return
        }
 	   
