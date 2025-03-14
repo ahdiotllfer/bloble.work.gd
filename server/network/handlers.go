@@ -13,7 +13,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"time"
-	"bytes"
+	"net/url"
 	"fmt"
 
 	"github.com/gorilla/websocket"
@@ -120,19 +120,19 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		log.Println("Invalid token format")
 		return
 	}
-	clIP := GetUserDataByConn(conn).ClientIP
+	clIP := GetUserDataByConn(conn)
 	log.Println("client ip:%", clIP)
 	secret := ""
-	verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
-	log.Println(Println)
-	if err != nil {
-		fmt.Println("Error verifying hCaptcha token:", err)
-		sendError(conn)
-		return
-	}
-	if verifyResp.Success {
-		fmt.Println("hCaptcha verification successful!")
-	}
+	// verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
+	// log.Println(Println)
+	// if err != nil {
+	// 	fmt.Println("Error verifying hCaptcha token:", err)
+	// 	sendError(conn)
+	// 	return
+	// }
+	// if verifyResp.Success {
+	// 	fmt.Println("hCaptcha verification successful!")
+	// }
 	
 	if SERVER_REBOOTING {
 		sendError(conn)
