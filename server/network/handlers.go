@@ -67,8 +67,8 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	startMarker := string([]rune{0x1F512}) // 🔒 \u{1F512}
 	endMarker := string([]rune{0x1F513})   // 🔓 \u{1F513}
 	payloadStr := string(payload)
-	startIdx := strings.Index(payloadStr, startMarker)
-	endIdx := strings.Index(payloadStr, endMarker)
+	startIdx := strings.Index(payloadStr, "🔒")
+    endIdx := strings.Index(payloadStr, "🔓")
 	log.Println(startIdx, endIdx, payloadStr)
 	// Конвертируем payload в строку для поиска токена
 	
