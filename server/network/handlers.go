@@ -133,14 +133,12 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	//_ = token
 	secret := ""
 	verifyResp, err := VerifyHCaptchaToken(token, secret, match)
-	log.Println(verifyResp)
-	if err != nil {
-		fmt.Println("Error verifying hCaptcha token:", err)
-		sendError(conn)
-		return
-	}
+	//log.Println(verifyResp)
 	if verifyResp.Success {
 		fmt.Println("hCaptcha verification successful!")
+	} else {
+		fmt.Println("Error verifying hCaptcha token")
+		return
 	}
 	
 	if SERVER_REBOOTING {
