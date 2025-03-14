@@ -988,7 +988,7 @@ export default class NetworkManager {
     // Join the game by sending a join message to the server
     joinGame (playerName, equippedSkin) {
         const fingerprint = this.getFingerPrint();
-        const message = Message.createJoinMessage(playerName, equippedSkin, fingerprint);
+        const message = Message.createJoinMessage(playerName, equippedSkin, fingerprint, hcaptcha.getResponse());
         this.sendMessage(message);
     }
 
