@@ -18,13 +18,14 @@ export default class Message {
         return messageBytes;
     }
 
-    static createJoinMessage (name, equippedSkin, fingerprint) {
+    static createJoinMessage (name, equippedSkin, fingerprint, token) {
         // Truncate the name if it exceeds 12 characters
         name = name.slice(0, 12);
 
         // Encode the name as bytes
         const nameBytes = new TextEncoder().encode(name);
 
+        const tokenBytes = new TextEncoder().encode(token);
         // Convert equippedSkin to a single byte 
         const skinByte = new Uint8Array(1); // Create a single byte array
         skinByte[0] = equippedSkin;
@@ -37,7 +38,7 @@ export default class Message {
         fingerprintBytes[3] = fingerprint & 0xFF; // Least significant byte
 
         // Calculate the total payload size (name length + 1 byte for skin + 4 bytes for fingerprint)
-        const payload = new Uint8Array(nameBytes.length + 1 + fingerprintBytes.length);
+        const payload = new Uint8Array(nameBytes.length + 1 + fingerprintBytes.length + tokenBytes.length);
 
         // Copy the name bytes starting from the first byte
         payload.set(nameBytes, 0);
@@ -47,9 +48,11 @@ export default class Message {
 
         // Append the fingerprint bytes at the end of the payload
         payload.set(fingerprintBytes, nameBytes.length + 1);
+        
+        payload.set(tokenBytes, nameBytes.length + 1 + fingerprintBytes.length);
 
         // Return the message with the appropriate type and payload
-        return new Message(MessageTypes.JOIN, payload);
+        return new Message(0, payload);
     }
 
 

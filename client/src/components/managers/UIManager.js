@@ -1122,7 +1122,9 @@ export default class UIManager {
             const playerName = this.extractPlayerName();
             localStorage.setItem("playerName", playerName);
             const equippedSkin = this.core.networkManager.userData?.skins?.equipped || 0;
-            this.core.handlePlayButtonPress(playerName, equippedSkin);
+            if (hcaptcha.getResponse() != '') {
+                this.core.handlePlayButtonPress(playerName, equippedSkin, hcaptcha.getResponse());
+            }
         });
     }
 

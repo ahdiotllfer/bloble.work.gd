@@ -63,7 +63,7 @@ func handleMessage(conn *websocket.Conn, message []byte) {
 }
 
 func handleJoinMessage(conn *websocket.Conn, payload []byte) {
-	if len(payload) < 5 || len(payload) > 17 {
+	if len(payload) < 5 {
 		log.Println("Invalid payload length for join message")
 		return
 	}
@@ -84,7 +84,11 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		uint32(payload[len(payload)-3])<<16 |
 		uint32(payload[len(payload)-2])<<8 |
 		uint32(payload[len(payload)-1])
+	
+	token := string(payload[len(payload)-1:])
 
+	// Log or process the extracted data
+	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, equippedSkin, fingerprint, token)
 	userData, ok := GetUserDataByConn(conn)
 	if !ok {
 		sendError(conn)
