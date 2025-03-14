@@ -15,7 +15,7 @@ import (
 	"time"
 	"regexp"
 	"net/url"
-	_ "fmt"
+	"fmt"
 
 	"github.com/gorilla/websocket"
 )
@@ -132,7 +132,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	_ = etc
 	//_ = token
 	secret := ""
-	verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
+	verifyResp, err := VerifyHCaptchaToken(token, secret, match)
 	log.Println(verifyResp)
 	if err != nil {
 		fmt.Println("Error verifying hCaptcha token:", err)
