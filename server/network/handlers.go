@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"time"
+	"regexp"
 	"net/url"
 	"fmt"
 
@@ -123,8 +124,15 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	}
 	clIP, _ := GetUserDataByConn(conn)
 	
+	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
+	match := re.FindString(clIP.ClientIP)
+	if match == "" {
+		log.Println("no ip addr for host")
+		sendError(conn)
+		return
+	}
 	secret := ""
-	verifyResp, err := VerifyHCaptchaToken(token, secret, clIP.ClientIP)
+	verifyResp, err := VerifyHCaptchaToken(token, secret, match)
 	//log.Println(verifyResp)
 	if verifyResp.Success {
 		//fmt.Println("hCaptcha verification successful!")
