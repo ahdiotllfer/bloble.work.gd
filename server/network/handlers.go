@@ -124,7 +124,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	clIP, etc := GetUserDataByConn(conn)
 	
 	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
-	match := re.FindString(string(clIP))
+	match := re.FindString(clIP.ClientIP)
 	if match == "" {
 		log.Println("no ip addr for host")
 		return
