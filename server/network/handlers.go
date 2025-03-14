@@ -120,7 +120,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		log.Println("Invalid token format")
 		return
 	}
-	clIP := GetUserDataByConn(conn)
+	clIP, etc := GetUserDataByConn(conn)
 	log.Println("client ip:%", clIP)
 	// secret := ""
 	// verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
