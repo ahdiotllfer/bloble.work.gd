@@ -9,7 +9,7 @@ import (
 	"server/game"
 	"sync"
 	"strings"
-	"utf8"
+	"unicode/utf8"
 	"time"
 
 	"github.com/gorilla/websocket"
