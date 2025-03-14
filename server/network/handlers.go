@@ -74,21 +74,23 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	}
 
 	// Extract the name (excluding the last 4 bytes for the fingerprint)
-	name := payload[:len(payload)-5]
+	nameLength := len(payload) - 5 - 1 // Subtract skin (1 byte), fingerprint (4 bytes), and token (variable length)
+	name := string(payload[:nameLength])
 
 	// Extract the equippedSkin (the byte immediately after the name)
-	equippedSkin := payload[len(name)]
+	equippedSkin := payload[nameLength]
 
-	// Extract the fingerprint (last 4 bytes)
-	fingerprint := uint32(payload[len(payload)-4])<<24 |
-		uint32(payload[len(payload)-3])<<16 |
-		uint32(payload[len(payload)-2])<<8 |
-		uint32(payload[len(payload)-1])
-	
-	token := payload[len(payload)-1:]
+	// Extract the fingerprint (4 bytes before the token)
+	fingerprint := uint32(payload[len(payload)-5])<<24 |
+		uint32(payload[len(payload)-4])<<16 |
+		uint32(payload[len(payload)-3])<<8 |
+		uint32(payload[len(payload)-2])
+
+	// Extract the token (remaining bytes after the fingerprint)
+	token := string(payload[len(payload)-1:])
 
 	// Log or process the extracted data
-	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %x\n", name, equippedSkin, fingerprint, token)
+	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, equippedSkin, fingerprint, token)
 	userData, ok := GetUserDataByConn(conn)
 	if !ok {
 		sendError(conn)
