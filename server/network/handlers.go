@@ -26,18 +26,15 @@ type VerifyCaptchaResponse struct {
 	ErrorCodes  []string `json:"error-codes"`  // optional: any error codes
 }
 var PORT = os.Getenv("PORT")
-func VerifyHCaptchaToken(token, secret string) (*VerifyCaptchaResponse, error) {
-	// Prepare the request body
-	requestBody, err := json.Marshal(map[string]string{
-		"response": token,
-		"secret":   secret,
-	})
-	if err != nil {
-		return nil, err
-	}
+func VerifyHCaptchaToken(token, secret, clientIP string) (*VerifyCaptchaResponse, error) {
+	// Prepare the form data
+	formData := url.Values{}
+	formData.Set("secret", secret)
+	formData.Set("response", token)
+	formData.Set("remoteip", clientIP)
 
 	// Make the POST request to hCaptcha API
-	resp, err := http.Post("https://hcaptcha.com/siteverify", "application/json", bytes.NewBuffer(requestBody))
+	resp, err := http.Post("https://api.hcaptcha.com/siteverify", "application/x-www-form-urlencoded", strings.NewReader(formData.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -123,10 +120,14 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		log.Println("Invalid token format")
 		return
 	}
+	clIP := GetUserDataByConn(conn).ClientIP
+	log.Println("client ip:%", clIP)
 	secret := ""
-	verifyResp, err := VerifyHCaptchaToken(token, secret)
+	verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
+	log.Println(Println)
 	if err != nil {
 		fmt.Println("Error verifying hCaptcha token:", err)
+		sendError(conn)
 		return
 	}
 	if verifyResp.Success {
