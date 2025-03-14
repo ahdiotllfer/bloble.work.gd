@@ -75,7 +75,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 
 	if endIdx > startIdx {
 		// Извлекаем токен
-		token = payloadStr[startIdx+5:endIdx]
+		token = payloadStr[startIdx+4:endIdx]
 
 		// Остаток payload после токена
 		remainingPayload = []byte(payloadStr[:startIdx])
