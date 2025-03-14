@@ -122,6 +122,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	}
 	clIP, etc := GetUserDataByConn(conn)
 	log.Println(clIP, etc)
+	_ = token
 	// secret := ""
 	// verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
 	// log.Println(Println)
