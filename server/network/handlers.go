@@ -119,25 +119,19 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		remainingPayload = []byte(payloadStr[:startIdx])
 	} else {
 		log.Println("Invalid token format")
+		sendError(conn)
 		return
 	}
-	clIP, etc := GetUserDataByConn(conn)
+	clIP, _ := GetUserDataByConn(conn)
 	
-	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
-	match := re.FindString(clIP.ClientIP)
-	if match == "" {
-		log.Println("no ip addr for host")
-		return
-	}
-	_ = etc
-	//_ = token
 	secret := ""
-	verifyResp, err := VerifyHCaptchaToken(token, secret, match)
+	verifyResp, err := VerifyHCaptchaToken(token, secret, clIP.ClientIP)
 	//log.Println(verifyResp)
 	if verifyResp.Success {
-		fmt.Println("hCaptcha verification successful!")
+		//fmt.Println("hCaptcha verification successful!")
 	} else {
 		fmt.Println("Error verifying hCaptcha token:%", err)
+		sendError(conn)
 		return
 	}
 	
@@ -147,6 +141,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	}
 	if len(remainingPayload) < 6 {
 		log.Println("Invalid remaining payload length")
+		sendError(conn)
 		return
 	}
 	nameLength := len(remainingPayload) - 5
