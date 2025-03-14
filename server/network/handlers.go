@@ -8,6 +8,8 @@ import (
 	"os"
 	"server/game"
 	"sync"
+	"strings"
+	"utf8"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -65,11 +67,12 @@ func handleMessage(conn *websocket.Conn, message []byte) {
 func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	startMarker := string([]rune{0x1F512}) // 🔒 \u{1F512}
 	endMarker := string([]rune{0x1F513})   // 🔓 \u{1F513}
+	payloadStr := string(payload)
 	startIdx := strings.Index(payloadStr, startMarker)
 	endIdx := strings.Index(payloadStr, endMarker)
 
 	// Конвертируем payload в строку для поиска токена
-	payloadStr := string(payload)
+	
 	var token string
 	var remainingPayload []byte
 
