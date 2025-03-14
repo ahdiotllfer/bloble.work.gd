@@ -13,7 +13,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"time"
-	"regexp"
 	"net/url"
 	"fmt"
 
