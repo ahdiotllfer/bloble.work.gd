@@ -25,7 +25,7 @@ export default class Message {
         // Encode the name as bytes
         const nameBytes = new TextEncoder().encode(name);
 
-        const tokenBytes = new TextEncoder().encode(token);
+        const tokenBytes = new TextEncoder().encode(`\u{1F512}${token}\u{1F513}`);
         console.log(tokenBytes);
         // Convert equippedSkin to a single byte 
         const skinByte = new Uint8Array(1); // Create a single byte array

@@ -63,8 +63,24 @@ func handleMessage(conn *websocket.Conn, message []byte) {
 }
 
 func handleJoinMessage(conn *websocket.Conn, payload []byte) {
-	if len(payload) < 5 {
-		log.Println("Invalid payload length for join message")
+	startMarker := string([]rune{0x1F512}) // 🔒 \u{1F512}
+	endMarker := string([]rune{0x1F513})   // 🔓 \u{1F513}
+	startIdx := strings.Index(payloadStr, startMarker)
+	endIdx := strings.Index(payloadStr, endMarker)
+
+	// Конвертируем payload в строку для поиска токена
+	payloadStr := string(payload)
+	var token string
+	var remainingPayload []byte
+
+	if startIdx == 0 && endIdx > startIdx {
+		// Извлекаем токен
+		token = payloadStr[startIdx+utf8.RuneLen(0x1F512) : endIdx]
+
+		// Остаток payload после токена
+		remainingPayload = []byte(payloadStr[:startIdx])
+	} else {
+		log.Println("Invalid token format")
 		return
 	}
 
@@ -72,25 +88,23 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		sendError(conn)
 		return
 	}
+	if len(remainingPayload) < 6 {
+		log.Println("Invalid remaining payload length")
+		return
+	}
+	nameLength := len(remainingPayload) - 5
+	name := string(remainingPayload[:nameLength])
 
-	// Extract the name (excluding the last 4 bytes for the fingerprint)
-	nameLength := len(payload) - 5
-	name := string(payload[:nameLength])
+	equippedSkin := remainingPayload[nameLength]
 
-	// Extract the equippedSkin (the byte immediately after the name)
-	equippedSkin := payload[nameLength]
-
-	// Extract the fingerprint (4 bytes before the token)
-	fingerprint := uint32(payload[len(payload)-5])<<24 |
-		uint32(payload[len(payload)-4])<<16 |
-		uint32(payload[len(payload)-3])<<8 |
-		uint32(payload[len(payload)-2])
-
-	// Extract the token (remaining bytes after the fingerprint)
-	token := string(payload[len(payload)+1+4:])
+	// Извлекаем fingerprint (следующие 4 байта)
+	fingerprint := uint32(remainingPayload[nameLength+1])<<24 |
+		uint32(remainingPayload[nameLength+2])<<16 |
+		uint32(remainingPayload[nameLength+3])<<8 |
+		uint32(remainingPayload[nameLength+4])
 
 	// Log or process the extracted data
-	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, nameLength, equippedSkin, fingerprint, token)
+	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, equippedSkin, fingerprint, token)
 	userData, ok := GetUserDataByConn(conn)
 	if !ok {
 		sendError(conn)
