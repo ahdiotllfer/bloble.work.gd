@@ -85,10 +85,10 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		uint32(payload[len(payload)-2])<<8 |
 		uint32(payload[len(payload)-1])
 	
-	token := string(payload[len(payload)-1:])
+	token := payload[len(payload)-1:]
 
 	// Log or process the extracted data
-	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %\n", name, equippedSkin, fingerprint, token)
+	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %x\n", name, equippedSkin, fingerprint, token)
 	userData, ok := GetUserDataByConn(conn)
 	if !ok {
 		sendError(conn)
