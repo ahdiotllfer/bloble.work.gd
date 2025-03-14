@@ -124,11 +124,12 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	clIP, etc := GetUserDataByConn(conn)
 	
 	re := regexp.MustCompile(`\b(?:\d{1,3}\.){3}\d{1,3}\b`)
-	match := re.FindString(clIP)
+	match := string(re.Find([]byte(clIP)))
 	if match == "" {
 		log.Println("no ip addr for host")
 		return
 	}
+	log.Println("match")
 	_ = etc
 	//_ = token
 	secret := ""
