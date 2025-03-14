@@ -137,7 +137,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	if verifyResp.Success {
 		fmt.Println("hCaptcha verification successful!")
 	} else {
-		fmt.Println("Error verifying hCaptcha token")
+		fmt.Println("Error verifying hCaptcha token:%", err)
 		return
 	}
 	
