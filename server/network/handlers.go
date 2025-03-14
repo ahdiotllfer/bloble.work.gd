@@ -66,10 +66,9 @@ func handleMessage(conn *websocket.Conn, message []byte) {
 func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 
 	payloadStr := string(payload)
-	startIdx := strings.Index(payloadStr, "🔒")+1
+	startIdx := strings.Index(payloadStr, "🔒")+2
     endIdx := strings.Index(payloadStr, "🔓")
-	log.Println(startIdx, endIdx, payloadStr)
-	// Конвертируем payload в строку для поиска токена
+	//log.Println(startIdx, endIdx, payloadStr)
 	
 	var token string
 	var remainingPayload []byte
