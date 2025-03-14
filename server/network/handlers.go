@@ -9,12 +9,52 @@ import (
 	"server/game"
 	"sync"
 	"strings"
+	"net/http"
+	"encoding/json"
+	"io/ioutil"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
-
+type VerifyCaptchaResponse struct {
+	Success     bool     `json:"success"`
+	ChallengeTS string   `json:"challenge_ts"` // timestamp of the challenge
+	Hostname    string   `json:"hostname"`     // the hostname of the site where the challenge was solved
+	Credit      bool     `json:"credit"`       // optional: whether the response will be credited
+	ErrorCodes  []string `json:"error-codes"`  // optional: any error codes
+}
 var PORT = os.Getenv("PORT")
+func VerifyHCaptchaToken(token, secret string) (*VerifyCaptchaResponse, error) {
+	// Prepare the request body
+	requestBody, err := json.Marshal(map[string]string{
+		"response": token,
+		"secret":   secret,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Make the POST request to hCaptcha API
+	resp, err := http.Post("https://hcaptcha.com/siteverify", "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse the response body into the VerifyCaptchaResponse struct
+	var verifyResp VerifyCaptchaResponse
+	if err := json.Unmarshal(body, &verifyResp); err != nil {
+		return nil, err
+	}
+
+	return &verifyResp, nil
+}
 
 func handleMessage(conn *websocket.Conn, message []byte) {
 	if len(message) < 1 {
@@ -74,16 +114,23 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 	var remainingPayload []byte
 
 	if endIdx > startIdx {
-		// Извлекаем токен
 		token = payloadStr[startIdx+4:endIdx]
 
-		// Остаток payload после токена
 		remainingPayload = []byte(payloadStr[:startIdx])
 	} else {
 		log.Println("Invalid token format")
 		return
 	}
-
+	secret := ''
+	verifyResp, err := VerifyHCaptchaToken(token, secret)
+	if err != nil {
+		fmt.Println("Error verifying hCaptcha token:", err)
+		return
+	}
+	if verifyResp.Success {
+		fmt.Println("hCaptcha verification successful!")
+	}
+	
 	if SERVER_REBOOTING {
 		sendError(conn)
 		return
@@ -97,7 +144,6 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 
 	equippedSkin := remainingPayload[nameLength]
 
-	// Извлекаем fingerprint (следующие 4 байта)
 	fingerprint := uint32(remainingPayload[nameLength+1])<<24 |
 		uint32(remainingPayload[nameLength+2])<<16 |
 		uint32(remainingPayload[nameLength+3])<<8 |
