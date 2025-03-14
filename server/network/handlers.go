@@ -121,7 +121,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		return
 	}
 	clIP, etc := GetUserDataByConn(conn)
-	log.Println("client ip:%", clIP)
+	log.Println(clIP, etc)
 	// secret := ""
 	// verifyResp, err := VerifyHCaptchaToken(token, secret, clIP)
 	// log.Println(Println)
@@ -153,7 +153,7 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		uint32(remainingPayload[nameLength+4])
 
 	// Log or process the extracted data
-	log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, equippedSkin, fingerprint, token)
+	//log.Printf("Received join message - Name: %s, Skin: %d, Fingerprint: %d, Token: %s\n", name, equippedSkin, fingerprint, token)
 	userData, ok := GetUserDataByConn(conn)
 	if !ok {
 		sendError(conn)
