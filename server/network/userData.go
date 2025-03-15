@@ -79,7 +79,7 @@ func StoreUserData(conn *websocket.Conn, userData UserData) bool {
 			connectionCount += len(connections)
 		}
 	}
-	log.Printf("prefix:%", ipPrefix, connectionCount)
+	log.Printf("prefix:%s, connectionCount:%d", ipPrefix, connectionCount)
 	// if connections, exists := ipIndex[userData.ClientIP]; exists && len(connections) == 1 {
 	// 	log.Printf("Connection rejected: IP %s already has 2 connections", userData.ClientIP)
 	// 	return false
