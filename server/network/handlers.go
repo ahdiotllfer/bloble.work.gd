@@ -130,6 +130,10 @@ func handleJoinMessage(conn *websocket.Conn, payload []byte) {
 		log.Println("no ip addr for host")
 		sendError(conn)
 		return
+	} else if match == "127.0.0.1" || match == "localhost" {
+		log.Println("attemp to connect from localhost")
+		sendError(conn)
+		return
 	}
 	secret := ""
 	verifyResp, err := VerifyHCaptchaToken(token, secret, match)
