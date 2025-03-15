@@ -61,7 +61,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 
 		// Allow requests from specific origins
-		if origin == "https://blubber.run.place" || origin == "http://localhost" || origin == "http://127.0.0.1" || origin == "http://localhost:5502" {
+		if origin == "https://blubber.run.place" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			
@@ -97,7 +97,7 @@ func getClientIP(r *http.Request) string {
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
        origine := r.Header.Get("Origin")
        // Allow only requests from "https://blubber.run.place"
-	   log.Printf(origine)
+	   //log.Printf(origine)
        if origine != "https://blubber.run.place" {
        		http.Error(w, "Forbidden", http.StatusForbidden)
 			log.Printf("origin forbidden: %", origine)
