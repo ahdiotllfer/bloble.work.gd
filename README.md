@@ -83,6 +83,11 @@ npm run build
 # Serve the resulting 'dist' directory with your preferred web server
 ```
 
+### Captcha
+
+```
+# Edit: server/network/handlers.go : change secret := "" to  
+```
 ### Authentication Server
 
 ```bash
