@@ -1,4 +1,4 @@
-# bloble.work.gd (bloble.io) - Open Source Multiplayer Game
+# bloble.online (bloble.io) - Open Source Multiplayer Game
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
@@ -132,7 +132,7 @@ npm start
 | Experimental Server | 9090 | `/ffa99` | Testing environment for new features |
 
 ## Deployment
-Note: you need to replace all the links https://bloble.work.gd with your url in the client and server code for everything to work
+Note: you need to replace all the links https://bloble.online with your url in the client and server code for everything to work
 
 I recommend using Nginx as a reverse proxy for production environments. This will help manage traffic efficiently and improve scalability by directing requests to the appropriate services.
 
