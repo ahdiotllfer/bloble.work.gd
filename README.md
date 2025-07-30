@@ -86,7 +86,7 @@ npm run build
 ### Captcha
 
 ```
-# Edit: server/network/handlers.go : change secret := "" to  
+# Edit: server/network/handlers.go : change secret := "" to secret := "ES_....." with your hcaptcha private token
 ```
 ### Authentication Server
 
